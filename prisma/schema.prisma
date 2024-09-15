@@ -1,0 +1,136 @@
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+model User {
+  userId String @id @default(cuid())
+  name   String
+  email  String @unique
+
+  organisation            OrganisationUser[]
+  organisationPermissions OrganisationUserPermissions[]
+  team                    TeamMember[]
+  mails                   Mails[]
+  notifications           Notification[]
+}
+
+model Mails {
+  mailId    String @id @default(uuid())
+  subject   String
+  body      String
+  recipient String
+  sender    String
+
+  user User @relation(fields: [recipient], references: [userId])
+}
+
+model Notification {
+  notificationId String   @id @default(uuid())
+  title          String
+  content        String
+  createdAt      DateTime @default(now())
+  userId         String
+
+  user User @relation(fields: [userId], references: [userId])
+}
+
+model Organisation {
+  orgId String @id @default(cuid())
+  name  String
+
+  organisationUsers       OrganisationUser[]
+  OrganisationPermissions OrganisationPermission[]
+}
+
+model OrganisationUser {
+  orgUserId String       @id @default(cuid())
+  userId    String       @unique
+  orgId     String
+  user      User         @relation(fields: [userId], references: [userId])
+  org       Organisation @relation(fields: [orgId], references: [orgId])
+}
+
+model OrganisationPermission {
+  orgPermissionsId String       @id @default(uuid())
+  orgId            String
+  name             String       @unique
+  details          String?
+  org              Organisation @relation(fields: [orgId], references: [orgId])
+
+  orgUserPermissions OrganisationUserPermissions[]
+}
+
+model OrganisationUserPermissions {
+  orgUserPermissionsId String                 @id @default(uuid())
+  orgPerissionId       String
+  userId               String
+  org                  User                   @relation(fields: [userId], references: [userId])
+  orgPermission        OrganisationPermission @relation(fields: [orgPerissionId], references: [orgPermissionsId])
+}
+
+model Team {
+  teamId String @id @default(cuid())
+  name   String
+
+  teamMembers     TeamMember[]
+  teamPermissions TeamPermissions[]
+  project         Project[]
+}
+
+model TeamMember {
+  teamMemberId String @id @default(cuid())
+  userId       String @unique
+  teamId       String
+  user         User   @relation(fields: [userId], references: [userId])
+  team         Team   @relation(fields: [teamId], references: [teamId])
+}
+
+model TeamPermissions {
+  teamPermissionsId String  @id @default(uuid())
+  teamId            String
+  name              String  @unique
+  details           String?
+  team              Team    @relation(fields: [teamId], references: [teamId])
+}
+
+model Project {
+  projectId String @id @default(uuid())
+  name      String
+  team      Team   @relation(fields: [teamId], references: [teamId])
+  teamId    String
+
+  sprints Sprint[]
+}
+
+model Sprint {
+  sprintId String @id @default(uuid())
+  title String
+  description String?
+  startDate DateTime
+  endDate   DateTime
+  status   String
+  projectId String
+
+  project Project @relation(fields: [projectId], references: [projectId])
+
+  sprintTasks SprintTask[]
+}
+
+model SprintTask {
+  sprintTaskId String @id @default(uuid())
+  title      String
+  description String?
+  startDate DateTime
+  endDate   DateTime
+  status   String
+  sprintId String
+
+  sprint Sprint @relation(fields: [sprintId], references: [sprintId])
+}
