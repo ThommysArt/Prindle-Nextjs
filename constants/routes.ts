@@ -4,7 +4,7 @@
  * @type {string[]}
  */
 export const publicRoutes = [
-    "/", 
+    "/home", 
     "/auth/new-verification",
     "/api/uploadthing"
   ];
@@ -33,5 +33,5 @@ export const publicRoutes = [
    * The default redirect path after loggin in
    * @type {string}
    */
-  export const DEFAULT_SIGNIN_REDIRECT = "/";
+  export const DEFAULT_SIGNIN_REDIRECT = "/home";
   

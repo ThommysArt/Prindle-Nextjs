@@ -25,10 +25,11 @@ import {
 } from "@/components/ui/alert"
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { HiOutlineDevicePhoneMobile } from "react-icons/hi2";
-import { webAuthnSchema } from "@/lib/zod"
+import { webAuthnSchema } from "@/constants/zod"
 import { BeatLoader } from "react-spinners";
 import { DEFAULT_SIGNIN_REDIRECT } from "@/constants/routes";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast"
+
 
  
 export default function PasskeySignInForm() {
@@ -71,6 +72,7 @@ export default function PasskeySignInForm() {
         .finally(()=>setLoading(false))
       }
     } catch (error) {
+      const {toast} = useToast()
       toast({
         title: "Authentication Failed",
         description: "An error occured during authentication. Please try again.",

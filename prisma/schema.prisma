@@ -1,17 +1,16 @@
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
 }
 
 model User {
-  userId            String          @id @default(cuid())
+  id        String          @id @default(cuid())
   name          String?
   email         String          @unique
   emailVerified DateTime?
@@ -26,11 +25,11 @@ model User {
   team                    TeamMember[]
   mails                   Mails[]
   notifications           Notification[]
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -43,33 +42,33 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
- 
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
- 
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
- 
+
 // Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
@@ -80,11 +79,12 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
- 
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([userId, credentialID])
 }
+
 model Mails {
   mailId    String @id @default(uuid())
   subject   String
@@ -92,7 +92,7 @@ model Mails {
   recipient String
   sender    String
 
-  user User @relation(fields: [recipient], references: [userId])
+  user User @relation(fields: [recipient], references: [id])
 }
 
 model Notification {
@@ -102,7 +102,7 @@ model Notification {
   createdAt      DateTime @default(now())
   userId         String
 
-  user User @relation(fields: [userId], references: [userId])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Organisation {
@@ -117,7 +117,7 @@ model OrganisationUser {
   orgUserId String       @id @default(cuid())
   userId    String       @unique
   orgId     String
-  user      User         @relation(fields: [userId], references: [userId])
+  user      User         @relation(fields: [userId], references: [id])
   org       Organisation @relation(fields: [orgId], references: [orgId])
 }
 
@@ -135,7 +135,7 @@ model OrganisationUserPermissions {
   orgUserPermissionsId String                 @id @default(uuid())
   orgPerissionId       String
   userId               String
-  org                  User                   @relation(fields: [userId], references: [userId])
+  org                  User                   @relation(fields: [userId], references: [id])
   orgPermission        OrganisationPermission @relation(fields: [orgPerissionId], references: [orgPermissionsId])
 }
 
@@ -152,7 +152,7 @@ model TeamMember {
   teamMemberId String @id @default(cuid())
   userId       String @unique
   teamId       String
-  user         User   @relation(fields: [userId], references: [userId])
+  user         User   @relation(fields: [userId], references: [id])
   team         Team   @relation(fields: [teamId], references: [teamId])
 }
 
@@ -174,13 +174,13 @@ model Project {
 }
 
 model Sprint {
-  sprintId String @id @default(uuid())
-  title String
+  sprintId    String   @id @default(uuid())
+  title       String
   description String?
-  startDate DateTime
-  endDate   DateTime
-  status   String
-  projectId String
+  startDate   DateTime
+  endDate     DateTime
+  status      String
+  projectId   String
 
   project Project @relation(fields: [projectId], references: [projectId])
 
@@ -188,13 +188,13 @@ model Sprint {
 }
 
 model SprintTask {
-  sprintTaskId String @id @default(uuid())
-  title      String
-  description String?
-  startDate DateTime
-  endDate   DateTime
-  status   String
-  sprintId String
+  sprintTaskId String   @id @default(uuid())
+  title        String
+  description  String?
+  startDate    DateTime
+  endDate      DateTime
+  status       String
+  sprintId     String
 
   sprint Sprint @relation(fields: [sprintId], references: [sprintId])
 }
