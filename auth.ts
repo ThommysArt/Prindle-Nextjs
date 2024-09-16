@@ -2,6 +2,8 @@ import NextAuth from "next-auth"
 import Passkey from "next-auth/providers/passkey"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/prisma/prisma"
+import { getUserById } from "./utils/user"
+import { getAccountByUserId } from "./utils/account"
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
     adapter: PrismaAdapter(prisma),
@@ -25,4 +27,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         signOut: "/auth/sign-out",
         error: "auth/error"
     },
+    callbacks: {
+        async session({ token, session }) {
+            if (token.sub && session.user) {
+              session.user.id = token.sub;
+            }
+      
+            if (session.user) {
+              session.user.name = token.name;
+              session.user.email = token.email!;
+            }
+      
+            return session;
+          },
+          async jwt({ token }) {
+            if (!token.sub) return token;
+      
+            const existingUser = await getUserById(token.sub);
+      
+            if (!existingUser) return token;
+      
+            const existingAccount = await getAccountByUserId(existingUser.id);
+      
+            token.isOAuth = !!existingAccount;
+            token.name = existingUser.name;
+            token.email = existingUser.email;
+      
+            return token;
+          },
+    }
 })

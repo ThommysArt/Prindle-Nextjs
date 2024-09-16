@@ -13,12 +13,12 @@ export default function AuthLayout({
 }>) {
   return (
     <div className="flex flex-col w-full h-screen">
-      {children}
-      <div className="bottom-0 w-full h-14">
-        <div className="bottom-0 z-50 p-2 w-full h-14 border-t">
+        <div>
+            {children}
+        </div>
+        <div className="fixed bottom-5 z-50 p-2 w-full h-14 border-t">
             <Navbar />
         </div>
-      </div>
     </div>
   );
 }

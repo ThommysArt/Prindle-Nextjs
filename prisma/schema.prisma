@@ -20,8 +20,8 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  organisation            OrganisationUser[]
-  organisationPermissions OrganisationUserPermissions[]
+  organisationUser           OrganisationUser[]
+  organisationUserPermissions OrganisationUserPermissions[]
   team                    TeamMember[]
   mails                   Mails[]
   notifications           Notification[]
@@ -117,8 +117,16 @@ model OrganisationUser {
   orgUserId String       @id @default(cuid())
   userId    String       @unique
   orgId     String
+  role  OrgUserRole @default(EMPLOYEE)
   user      User         @relation(fields: [userId], references: [id])
   org       Organisation @relation(fields: [orgId], references: [orgId])
+}
+
+enum OrgUserRole {
+  FOUNDER
+  MANAGER
+  TEAM_LEADER
+  EMPLOYEE
 }
 
 model OrganisationPermission {
@@ -167,6 +175,7 @@ model TeamPermissions {
 model Project {
   projectId String @id @default(uuid())
   name      String
+  description String?
   team      Team   @relation(fields: [teamId], references: [teamId])
   teamId    String
 
