@@ -10,7 +10,7 @@ generator client {
 }
 
 model User {
-  id        String          @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
   email         String          @unique
   emailVerified DateTime?
@@ -20,11 +20,11 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
-  organisationUser           OrganisationUser[]
+  organisationUser            OrganisationUser[]
   organisationUserPermissions OrganisationUserPermissions[]
-  team                    TeamMember[]
-  mails                   Mails[]
-  notifications           Notification[]
+  team                        TeamMember[]
+  mails                       Mails[]
+  notifications               Notification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -111,13 +111,15 @@ model Organisation {
 
   organisationUsers       OrganisationUser[]
   OrganisationPermissions OrganisationPermission[]
+  teams                   Team[]
+  projects                Project[]
 }
 
 model OrganisationUser {
   orgUserId String       @id @default(cuid())
   userId    String       @unique
   orgId     String
-  role  OrgUserRole @default(EMPLOYEE)
+  role      OrgUserRole  @default(EMPLOYEE)
   user      User         @relation(fields: [userId], references: [id])
   org       Organisation @relation(fields: [orgId], references: [orgId])
 }
@@ -148,12 +150,16 @@ model OrganisationUserPermissions {
 }
 
 model Team {
-  teamId String @id @default(cuid())
-  name   String
+  teamId      String  @id @default(cuid())
+  name        String
+  description String?
+  orgId       String
+
+  org Organisation @relation(fields: [orgId], references: [orgId])
 
   teamMembers     TeamMember[]
   teamPermissions TeamPermissions[]
-  project         Project[]
+  sprints         Sprint[]
 }
 
 model TeamMember {
@@ -173,11 +179,11 @@ model TeamPermissions {
 }
 
 model Project {
-  projectId String @id @default(uuid())
-  name      String
+  projectId   String       @id @default(uuid())
+  name        String
   description String?
-  team      Team   @relation(fields: [teamId], references: [teamId])
-  teamId    String
+  orgId       String
+  org         Organisation @relation(fields: [orgId], references: [orgId])
 
   sprints Sprint[]
 }
@@ -190,7 +196,9 @@ model Sprint {
   endDate     DateTime
   status      String
   projectId   String
+  teamId      String
 
+  team    Team    @relation(fields: [teamId], references: [teamId])
   project Project @relation(fields: [projectId], references: [projectId])
 
   sprintTasks SprintTask[]

@@ -1,5 +1,6 @@
 import React from 'react'
 import { NewOrgForm } from './_components/new-org-form'
+import { BackButton } from '@/components/back-button'
 
 const NewOrgPage = () => {
   return (
@@ -7,6 +8,7 @@ const NewOrgPage = () => {
       {/* Top status bar */}
       <div className="flex w-full h-14">
         <div className="fixed top-5 z-50 flex items-center gap-4 w-full border-b py-2 px-6">
+            <BackButton />
           <h1 className="text-2xl font-bold">New Organsiation</h1>
         </div>
       </div>

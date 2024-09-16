@@ -16,7 +16,7 @@ export default function AuthLayout({
         <div>
             {children}
         </div>
-        <div className="fixed bottom-5 z-50 p-2 w-full h-14 border-t">
+        <div className="fixed bottom-5 z-50 p-2 w-full h-14 border-t backdrop-blur-sm">
             <Navbar />
         </div>
     </div>

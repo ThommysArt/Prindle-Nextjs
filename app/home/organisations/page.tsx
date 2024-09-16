@@ -4,6 +4,8 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { PlusIcon } from '@radix-ui/react-icons'
+import { OrgCard } from './_components/org-card'
+
 
 const OrganisationsPage = async () => {
     const session = await auth()
@@ -12,7 +14,7 @@ const OrganisationsPage = async () => {
         include: { org: true },
     })
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col h-screen'>
       {/* Top status bar */}
       <div className="flex w-full h-14">
         <div className="fixed top-5 z-50 flex items-center gap-4 w-full border-b py-2 px-6">
@@ -24,13 +26,7 @@ const OrganisationsPage = async () => {
         {/* Project list */}
         <div className="flex flex-col gap-4 w-full">
           {orgs.map((orgUser) => (
-            <div key={orgUser.orgUserId} className="flex w-full border-b border-gray-200 px-4 py-2">
-              <div className="flex items-center gap-2">
-                <div className="flex-1">
-                  <h2 className="text-xl font-bold">{orgUser.org.name}</h2>
-                </div>
-              </div>
-            </div>
+            <OrgCard org={orgUser.org} />
           ))}
           <Button>
             <Link href="/home/organisations/new" className="flex items-center font-semibold">

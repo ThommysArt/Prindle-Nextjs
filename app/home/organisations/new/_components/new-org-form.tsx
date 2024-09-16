@@ -27,12 +27,14 @@ import { useToast } from '@/hooks/use-toast'
 import { BeatLoader } from 'react-spinners'
 import { createOrganisation } from '@/actions/org'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export const NewOrgForm = () => {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
     const { data: session } = useSession()
+    const router = useRouter()
 
     const {toast} = useToast()
 
@@ -53,10 +55,11 @@ export const NewOrgForm = () => {
             .then((org)=> {
                 toast({
                     title: "Organisation Created Successfully",
-                    description: `${org.name} has been created. You can now manage your projects and team.`,
+                    description: `${org.name} Org has been created. You can now manage your projects and team.`,
                 })
+                router.push(`/home/organisations/manage/${org.orgId}`)
             })
-            .catch(() => setError("Something went wrong"));
+            .catch(() => setError("Something went wrong"))
         })
       }
   return (
