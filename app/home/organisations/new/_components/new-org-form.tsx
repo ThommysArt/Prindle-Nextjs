@@ -36,8 +36,6 @@ export const NewOrgForm = () => {
     const { data: session } = useSession()
     const router = useRouter()
 
-    const {toast} = useToast()
-
     const form = useForm<z.infer<typeof NewOrgSchema>>({
         resolver: zodResolver(NewOrgSchema),
         defaultValues: {
@@ -53,10 +51,7 @@ export const NewOrgForm = () => {
             
             createOrganisation(values.name, session?.user?.id!)
             .then((org)=> {
-                toast({
-                    title: "Organisation Created Successfully",
-                    description: `${org.name} Org has been created. You can now manage your projects and team.`,
-                })
+                setSuccess(`${org.name} Organisation Created Successfully`)
                 router.push(`/home/organisations/manage/${org.orgId}`)
             })
             .catch(() => setError("Something went wrong"))
@@ -72,20 +67,20 @@ export const NewOrgForm = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                            <Input placeholder="Example LT" {...field} disabled={isPending}/>
-                        </FormControl>
-                        <FormDescription>
-                            This is the name of your new organisation.
-                        </FormDescription>
-                        <FormMessage />
-                        </FormItem>
-                    )}
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Example LT" {...field} disabled={isPending}/>
+                            </FormControl>
+                            <FormDescription>
+                                This is the name of your new organisation.
+                            </FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
                     />
                     {error && (
                         <Alert variant="destructive">

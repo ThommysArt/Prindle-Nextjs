@@ -7,7 +7,7 @@ const NewOrgPage = () => {
     <div className='flex flex-col h-screen'>
       {/* Top status bar */}
       <div className="flex w-full h-14">
-        <div className="fixed top-5 z-50 flex items-center gap-4 w-full border-b py-2 px-6">
+        <div className="sticky top-5 z-50 flex items-center gap-4 w-full border-b py-2 px-6">
             <BackButton />
           <h1 className="text-2xl font-bold">New Organsiation</h1>
         </div>

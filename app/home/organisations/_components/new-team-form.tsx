@@ -30,10 +30,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { createTeam } from '@/actions/teams'
 
 export function NewTeamForm({orgId}: {orgId: string}) {
+  const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof NewTeamSchema>>({
     resolver: zodResolver(NewTeamSchema),
@@ -45,6 +45,7 @@ export function NewTeamForm({orgId}: {orgId: string}) {
   
   function onSubmit(values: z.infer<typeof NewTeamSchema>) {
     setError("")
+    setSuccess("")
 
     startTransition(async () => {
       try {
@@ -53,10 +54,7 @@ export function NewTeamForm({orgId}: {orgId: string}) {
             values.description,
             orgId,
         )
-        toast({
-          title: "Team Created Successfully",
-          description: `${team.name} team has been created. You can now manage your projects and team.`,
-        })
+        setSuccess(`${team.name} team created successfully.`)
         router.push(`/home/organisations/manage/${team.orgId}`)
       } catch (err) {
         setError("Something went wrong")
@@ -106,11 +104,18 @@ export function NewTeamForm({orgId}: {orgId: string}) {
               )}
             />
             {error && (
-              <Alert variant="destructive">
+                <Alert variant="destructive">
                 <ExclamationTriangleIcon className="h-6 w-6" />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
-              </Alert>
+                </Alert>
+            )}
+            {success && (
+                <Alert>
+                <RocketIcon className="h-6 w-6"/>
+                <AlertTitle>Success</AlertTitle>
+                <AlertDescription>{success}</AlertDescription>
+                </Alert>
             )}
             <Button type="submit" disabled={isPending}>
               {isPending ? <BeatLoader size={8} color="currentColor" /> : "Submit"}

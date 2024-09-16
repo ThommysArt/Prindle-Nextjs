@@ -10,7 +10,7 @@ export const Navbar = () => {
     const router = useRouter()
   return (
     <nav className='flex flex-row justify-between items-center px-3'>
-        <div className={cn("flex flex-col gap-1 text-sm hover:text-primary items-center justify-center", pathname.includes("/home/dashboard") ? "text-primary":"text-muted-foreground")}
+        <div className={cn("flex flex-col gap-1 text-sm hover:text-primary items-center justify-center", pathname.includes("/home/projects") ? "text-primary":"text-muted-foreground")}
             onClick={()=>router.push("/home/projects")}
         >
             <HomeIcon className="w-6 h-6" />

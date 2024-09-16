@@ -17,3 +17,11 @@ export const NewTeamSchema = object({
   description: string({ required_error: "Your team must have a description." })
     .min(20, "Team description must exceed 20 characters.")
 })
+
+export const NewProjectSchema = object({
+  name: string({ required_error: "Your Project must have a name." })
+    .min(3, "Name must be at least 3 characters long"),
+  description: string({ required_error: "Your Project must have a description." })
+    .min(30, "Project description must exceed 20 characters."),
+  orgId: string({ required_error: "You need to choose an organisation for your project"})
+})
