@@ -23,4 +23,15 @@ export const getSprint = async (sprintId: string) => {
             sprintId: sprintId
         }
     })
+    return sprint
+}
+
+export const updateSprint = async (sprintId: string, values: any) => {
+    const sprint = await prisma.sprint.update({
+        where: {
+            sprintId: sprintId
+        },
+        data: values
+    })
+    return sprint
 }

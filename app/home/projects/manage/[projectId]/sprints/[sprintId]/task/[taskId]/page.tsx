@@ -17,6 +17,9 @@ import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { getTasks } from '@/actions/tasks'
+import { SprintTask } from '@prisma/client'
+import { BackButton } from '@/components/back-button'
 
 const taskSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -29,7 +32,7 @@ const taskSchema = z.object({
 export default function EditTaskPage({ params }: { params: { taskId: string } }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [task, setTask] = useState(null)
+  const [task, setTask] = useState<SprintTask|null>(null)
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof taskSchema>>({
@@ -46,17 +49,9 @@ export default function EditTaskPage({ params }: { params: { taskId: string } })
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const response = await fetch(`/api/tasks/${params.taskId}`)
-        if (!response.ok) throw new Error('Failed to fetch task')
-        const data = await response.json()
+        const data = await getTasks(params.taskId)
         setTask(data)
-        form.reset({
-          title: data.title,
-          description: data.description,
-          startDate: new Date(data.startDate),
-          endDate: new Date(data.endDate),
-          status: data.status,
-        })
+        return data
       } catch (error) {
         toast({ title: 'Error', description: 'Failed to fetch task', variant: 'destructive' })
       }
@@ -88,11 +83,12 @@ export default function EditTaskPage({ params }: { params: { taskId: string } })
     <div className='flex flex-col h-screen'>
       <div className="sticky top-0 z-40 bg-background w-full h-14 border-b">
         <div className="flex items-center gap-4 h-full px-6">
+          <BackButton/>
           <h1 className="text-2xl font-bold">Edit Task</h1>
         </div>
       </div>
       <div className="flex-1 overflow-auto p-6">
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-sm my-10">
           <CardHeader>
             <CardTitle>Edit Task</CardTitle>
           </CardHeader>

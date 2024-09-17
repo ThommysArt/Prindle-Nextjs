@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
@@ -16,19 +17,16 @@ import { CalendarIcon } from '@radix-ui/react-icons'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
-import { getSprint } from '@/actions/sprint'
+import { getSprint, updateSprint } from '@/actions/sprint'
+import { Sprint } from '@prisma/client'
+import { sprintSchema } from '@/constants/zod'
+import { BackButton } from '@/components/back-button'
 
-const sprintSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
-  startDate: z.date(),
-  endDate: z.date(),
-})
 
 export default function EditSprintPage({ params }: { params: { sprintId: string } }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [sprint, setSprint] = useState(null)
+  const [sprint, setSprint] = useState<Sprint|null>(null)
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof sprintSchema>>({
@@ -38,14 +36,16 @@ export default function EditSprintPage({ params }: { params: { sprintId: string 
       description: '',
       startDate: new Date(),
       endDate: new Date(),
+      status: "TODO"  
     },
   })
 
   useEffect(() => {
     const fetchSprint = async () => {
       try {
-        const sprint = await getSprint(params.sprintId)
-        return sprint
+        const thisSprint = await getSprint(params.sprintId)
+        setSprint(thisSprint)
+        return thisSprint
       } catch (error) {
         toast({ title: 'Error', description: 'Failed to fetch sprint', variant: 'destructive' })
       }
@@ -56,12 +56,7 @@ export default function EditSprintPage({ params }: { params: { sprintId: string 
   async function onSubmit(values: z.infer<typeof sprintSchema>) {
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/sprints/${params.sprintId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      })
-      if (!response.ok) throw new Error('Failed to update sprint')
+      const updatedSprint = await updateSprint(params.sprintId, values)
       toast({ title: 'Sprint updated successfully' })
       router.back()
     } catch (error) {
@@ -77,11 +72,12 @@ export default function EditSprintPage({ params }: { params: { sprintId: string 
     <div className='flex flex-col h-screen'>
       <div className="sticky top-0 z-40 bg-background w-full h-14 border-b">
         <div className="flex items-center gap-4 h-full px-6">
+          <BackButton/>
           <h1 className="text-2xl font-bold">Edit Sprint</h1>
         </div>
       </div>
       <div className="flex-1 overflow-auto p-6">
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-sm my-10">
           <CardHeader>
             <CardTitle>Edit Sprint</CardTitle>
           </CardHeader>
@@ -198,6 +194,28 @@ export default function EditSprintPage({ params }: { params: { sprintId: string 
                     )}
                   />
                 </div>
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="TODO">To Do</SelectItem>
+                          <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                          <SelectItem value="DONE">Done</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? 'Updating...' : 'Update Sprint'}
                 </Button>
