@@ -3,10 +3,11 @@ import { BackButton } from '@/components/back-button'
 import { NewProjectForm } from './_components/new-project-form'
 import { prisma } from '@/prisma/prisma'
 import { auth } from '@/auth'
-import { Organisation } from '@prisma/client'
+import { redirect } from 'next/navigation'
 
 export default async function NewTeamPage() {
     const session = await auth()
+    if (!session?.user?.id) return redirect("/auth/sign-in")
     const UserOrgs = await prisma.organisationUser.findMany({
         where: {
             userId: session!.user!.id!
@@ -18,7 +19,6 @@ export default async function NewTeamPage() {
             return org.orgId === Userorg.orgId
         })
     })
-    console.log(orgs)
     
   return (
     <div className='flex flex-col h-screen'>

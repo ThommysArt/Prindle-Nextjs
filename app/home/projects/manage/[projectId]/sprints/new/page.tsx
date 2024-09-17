@@ -2,10 +2,11 @@ import { NewSprintForm } from "@/app/home/projects/_components/new-sprint-form"
 import { auth } from "@/auth"
 import { BackButton } from "@/components/back-button"
 import { prisma } from "@/prisma/prisma"
+import { redirect } from "next/navigation"
 
 export default async function CreateSprintPage({ params }: { params: { projectId: string } }) {
   const session = await auth()
-
+  if (!session?.user?.id) return redirect("/auth/sign-in")
   const UserOrgs = await prisma.organisationUser.findMany({
     where: {
         userId: session!.user!.id!
