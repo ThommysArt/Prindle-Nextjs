@@ -1,4 +1,5 @@
-import { object, string, number, optional } from "zod"
+import { object, string, number, optional, date } from "zod"
+import * as z from "zod"
 
 export const webAuthnSchema = object({
     email: string({ required_error: "Email is required" })
@@ -24,4 +25,21 @@ export const NewProjectSchema = object({
   description: string({ required_error: "Your Project must have a description." })
     .min(30, "Project description must exceed 20 characters."),
   orgId: string({ required_error: "You need to choose an organisation for your project"})
+})
+
+export const sprintSchema = object({
+  title: string().min(1, 'Title is required'),
+  description: string(),
+  startDate: date(),
+  endDate: date(),
+  teamId: string(),
+  status: z.enum(['TODO', 'IN_PROGRESS', 'DONE']),
+})
+
+export const taskSchema = object({
+  title: string().min(1, 'Title is required'),
+  description: string(),
+  startDate: date(),
+  endDate: date(),
+  status: z.enum(['TODO', 'IN_PROGRESS', 'DONE']),
 })

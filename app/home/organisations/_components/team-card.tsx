@@ -8,7 +8,7 @@ import { Team } from '@prisma/client'
 export const Teamcard = ({team} : {team: Team}) => {
     const router = useRouter()
   return (
-    <Card key={team.orgId} onClick={()=>{router.push(`/home//organisations/manage/${team.orgId}`)}}>
+    <Card key={team.orgId} onClick={()=>{router.push(`/home/organisations/manage/${team.orgId}`)}}>
         <CardHeader>
             <CardTitle>{team.name}</CardTitle>
             <CardDescription>{team.description}</CardDescription>

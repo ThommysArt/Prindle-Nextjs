@@ -3,6 +3,7 @@ import { prisma } from '@/prisma/prisma'
 import { PlusIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
 import React from 'react'
+import { Projectcard } from '../organisations/_components/project-card'
 
 const DashboardPage = async () => {
   const projects = await prisma.project.findMany()
@@ -19,14 +20,7 @@ const DashboardPage = async () => {
         {/* Project list */}
         <div className="flex flex-col gap-4 w-full">
           {projects.map((project) => (
-            <div key={project.projectId} className="flex w-full border-b border-gray-200 px-4 py-2">
-              <div className="flex items-center gap-2">
-                <div className="flex-1">
-                  <h2 className="text-xl font-bold">{project.name}</h2>
-                  <p className="text-sm text-muted-foreground">{project.description}</p>
-                </div>
-              </div>
-            </div>
+            <Projectcard project={project} />
           ))}
           <Button>
             <Link href="/home/projects/new" className="flex items-center font-semibold">
