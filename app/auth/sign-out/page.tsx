@@ -20,7 +20,8 @@ export default function SignUpPage() {
           </CardTitle>
           <CardDescription>Are you sure you want to sign out?</CardDescription>
         </CardHeader>
-        <CardFooter>
+        <CardFooter className="flex gap-4">
+          <Button variant="outline">Cancel</Button>
           <Button type="submit" variant="destructive">Sign Out</Button>
         </CardFooter>
       </form>

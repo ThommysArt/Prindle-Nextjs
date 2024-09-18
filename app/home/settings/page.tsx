@@ -2,6 +2,9 @@ import { Suspense } from 'react'
 import { ThemeSwitcher } from './_components/theme-switcher'
 import { UserAccountCard } from './_components/user-account-card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { PersonIcon } from '@radix-ui/react-icons'
 
 export default function SettingsPage() {
   return (
@@ -22,6 +25,13 @@ export default function SettingsPage() {
           <Suspense fallback={<Skeleton className="w-full max-w-sm h-[200px]" />}>
             <UserAccountCard />
           </Suspense>
+        </section>
+        <section>
+          <Button variant="destructive">
+            <Link href="/auth/sign-out" className="flex gap-2">
+              <PersonIcon /> Sign Out
+            </Link>
+          </Button>
         </section>
       </div>
     </div>
