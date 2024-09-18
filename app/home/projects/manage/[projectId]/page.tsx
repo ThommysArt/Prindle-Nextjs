@@ -2,7 +2,7 @@ import { prisma } from '@/prisma/prisma'
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { PlusIcon } from '@radix-ui/react-icons'
+import { DotsVerticalIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { format } from 'date-fns'
@@ -32,7 +32,7 @@ const ProjectPage = async ({ params }: { params: { projectId: string } }) => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto p-6 mt-10 mb-24">
         <div className="grid gap-6">
           {sprints.map((sprint) => (
             <Card key={sprint.sprintId}>
@@ -62,12 +62,24 @@ const ProjectPage = async ({ params }: { params: { projectId: string } }) => {
                         <TableCell>{format(new Date(task.startDate), 'PP')}</TableCell>
                         <TableCell>{format(new Date(task.endDate), 'PP')}</TableCell>
                         <TableCell>{task.status}</TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="icon">
+                            <Link href={`/home/projects/manage/${params.projectId}/sprints/${sprint.sprintId}/tasks/${task.sprintTaskId}`} className="flex items-center font-semibold">
+                              <DotsVerticalIcon />
+                            </Link>
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </CardContent>
               <CardFooter className="flex gap-4">
+                <Button>
+                  <Link href={`/home/projects/manage/${params.projectId}/sprints/${sprint.sprintId}/tasks`} className="flex items-center font-semibold">
+                    New Task <PlusIcon className="ml-2" />
+                  </Link>
+                </Button>
                 <Button>
                   <Link href={`/home/projects/manage/${params.projectId}/sprints/${sprint.sprintId}`} className="flex items-center font-semibold">
                     Edit

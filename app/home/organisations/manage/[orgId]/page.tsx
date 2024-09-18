@@ -24,19 +24,27 @@ const OrgManagement = async ({params}: {params: {orgId: string}}) => {
       </div>
 
       <div className="my-8 mx-6">
-        {/* Project list */}
-        <div className="flex flex-col gap-4 w-full">
-          {teams.map((team) => (
-            <Teamcard team={team} />
-          ))}
-          <Button>
+        {/* Action buttons */}
+        <div className="flex justify-between mb-6">
+          <Button asChild>
             <Link href={`/home/organisations/manage/${params.orgId}/teams/new`} className="flex items-center font-semibold">
               New Team<PlusIcon className="ml-2"/>
             </Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link href={`/home/organisations/manage/${params.orgId}/add-users`} className="flex items-center font-semibold">
+              Add Users<PlusIcon className="ml-2"/>
+            </Link>
+          </Button>
+        </div>
+
+        {/* Team list */}
+        <div className="flex flex-col gap-4 w-full mt-10 mb-24">
+          {teams.map((team) => (
+            <Teamcard key={team.teamId} team={team} />
+          ))}
         </div>
       </div>
-
     </div>
   )
 }
