@@ -10,15 +10,17 @@ generator client {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String          @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id                String          @id @default(cuid())
+  name              String?
+  email             String          @unique
+  emailVerified     DateTime?
+  image             String?
+  gmailAccessToken  String?
+  gmailRefreshToken String?
+  accounts          Account[]
+  sessions          Session[]
   // Optional for WebAuthn support
-  Authenticator Authenticator[]
+  Authenticator     Authenticator[]
 
   organisationUser            OrganisationUser[]
   organisationUserPermissions OrganisationUserPermissions[]
@@ -85,14 +87,24 @@ model Authenticator {
   @@id([userId, credentialID])
 }
 
-model Mails {
-  mailId    String @id @default(uuid())
-  subject   String
-  body      String
-  recipient String
-  sender    String
+model MailGroup {
+  groupId String   @id @default(uuid())
+  name    String
+  emails  String[] @default([""])
+  mails   Mails[]
+}
 
-  user User @relation(fields: [recipient], references: [id])
+model Mails {
+  mailId         String   @id @default(uuid())
+  subject        String
+  body           String
+  recipientEmail String
+  senderId       String
+  groupId        String
+  sentAt         DateTime @default(now())
+
+  mailGroup MailGroup @relation(fields: [groupId], references: [groupId])
+  user      User      @relation(fields: [senderId], references: [id])
 }
 
 model Notification {
