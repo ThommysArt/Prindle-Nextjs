@@ -76,7 +76,7 @@ const ProjectPage = async ({ params }: { params: { projectId: string } }) => {
               </CardContent>
               <CardFooter className="flex gap-4">
                 <Button>
-                  <Link href={`/home/projects/manage/${params.projectId}/sprints/${sprint.sprintId}/tasks`} className="flex items-center font-semibold">
+                  <Link href={`/home/projects/manage/${params.projectId}/sprints/${sprint.sprintId}/tasks/new`} className="flex items-center font-semibold">
                     New Task <PlusIcon className="ml-2" />
                   </Link>
                 </Button>
