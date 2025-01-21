@@ -20,7 +20,7 @@ export default async function NotePage({ params }: { params: { noteId: string } 
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-10 px-4">
       <NoteEditor note={note} />
     </div>
   )
