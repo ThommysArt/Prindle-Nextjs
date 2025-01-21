@@ -1,8 +1,8 @@
 {
     "name": "Prindle - Productivity App",
     "short_name": "Prindle",
-    "description": "A Progressive Web App built with Next.js",
-    "start_url": "/",
+    "description": "This is a Project Management App",
+    "start_url": "/home/projects",
     "display": "standalone",
     "icons": [
         {
