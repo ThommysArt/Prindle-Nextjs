@@ -23,10 +23,9 @@ model User {
   Authenticator     Authenticator[]
 
   organisationUser            OrganisationUser[]
-  organisationUserPermissions OrganisationUserPermissions[]
   team                        TeamMember[]
-  mails                       Mails[]
-  notifications               Notification[]
+  notes                       Note[]
+  sharedNotes                 SharedNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -87,42 +86,12 @@ model Authenticator {
   @@id([userId, credentialID])
 }
 
-model MailGroup {
-  groupId String   @id @default(uuid())
-  name    String
-  emails  String[] @default([""])
-  mails   Mails[]
-}
-
-model Mails {
-  mailId         String   @id @default(uuid())
-  subject        String
-  body           String
-  recipientEmail String
-  senderId       String
-  groupId        String
-  sentAt         DateTime @default(now())
-
-  mailGroup MailGroup @relation(fields: [groupId], references: [groupId])
-  user      User      @relation(fields: [senderId], references: [id])
-}
-
-model Notification {
-  notificationId String   @id @default(uuid())
-  title          String
-  content        String
-  createdAt      DateTime @default(now())
-  userId         String
-
-  user User @relation(fields: [userId], references: [id])
-}
 
 model Organisation {
   orgId String @id @default(cuid())
   name  String
 
   organisationUsers       OrganisationUser[]
-  OrganisationPermissions OrganisationPermission[]
   teams                   Team[]
   projects                Project[]
 }
@@ -143,23 +112,6 @@ enum OrgUserRole {
   EMPLOYEE
 }
 
-model OrganisationPermission {
-  orgPermissionsId String       @id @default(uuid())
-  orgId            String
-  name             String       @unique
-  details          String?
-  org              Organisation @relation(fields: [orgId], references: [orgId])
-
-  orgUserPermissions OrganisationUserPermissions[]
-}
-
-model OrganisationUserPermissions {
-  orgUserPermissionsId String                 @id @default(uuid())
-  orgPerissionId       String
-  userId               String
-  org                  User                   @relation(fields: [userId], references: [id])
-  orgPermission        OrganisationPermission @relation(fields: [orgPerissionId], references: [orgPermissionsId])
-}
 
 model Team {
   teamId      String  @id @default(cuid())
@@ -170,7 +122,6 @@ model Team {
   org Organisation @relation(fields: [orgId], references: [orgId])
 
   teamMembers     TeamMember[]
-  teamPermissions TeamPermissions[]
   sprints         Sprint[]
 }
 
@@ -182,13 +133,6 @@ model TeamMember {
   team         Team   @relation(fields: [teamId], references: [teamId])
 }
 
-model TeamPermissions {
-  teamPermissionsId String  @id @default(uuid())
-  teamId            String
-  name              String  @unique
-  details           String?
-  team              Team    @relation(fields: [teamId], references: [teamId])
-}
 
 model Project {
   projectId   String       @id @default(uuid())
@@ -226,4 +170,27 @@ model SprintTask {
   sprintId     String
 
   sprint Sprint @relation(fields: [sprintId], references: [sprintId])
+}
+
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ownerId    String
+  owner      User     @relation(fields: [ownerId], references: [id])
+
+  sharedNotes SharedNote[]
+}
+
+model SharedNote {
+  id        String   @id @default(cuid())
+  noteId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  note      Note     @relation(fields: [noteId], references: [id])
 }
