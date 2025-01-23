@@ -194,7 +194,7 @@ export function NoteEditor({ note }: NoteEditorProps) {
       </div>
 
       <div className="flex justify-end gap-3 mt-4">
-        <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
+        <Button variant="outline" onClick={() => router.back()}>Back</Button>
         <Button onClick={handleSave} disabled={isSaving}>
           {isSaving ? <BeatLoader /> : 'Save'}
         </Button>

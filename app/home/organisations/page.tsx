@@ -26,7 +26,7 @@ const OrganisationsPage = async () => {
         {/* Project list */}
         <div className="flex flex-col gap-4 w-full">
           {orgs.map((orgUser) => (
-            <OrgCard org={orgUser.org} />
+            <OrgCard key={orgUser.userId} org={orgUser.org} />
           ))}
           <Button>
             <Link href="/home/organisations/new" className="flex items-center font-semibold">

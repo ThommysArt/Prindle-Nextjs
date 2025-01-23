@@ -16,9 +16,9 @@ export default function SettingsPage() {
         </div>
       </div>
       <div className="space-y-8 mx-4 md:mx-10">
-        <section>
+        <section className="w-fit">
           <h2 className="text-xl font-semibold mb-4">Theme</h2>
-          <ThemeSwitcher />
+          <ThemeSwitcher mode='expanded' />
         </section>
         <section>
           <h2 className="text-xl font-semibold mb-4">User Account Portal</h2>

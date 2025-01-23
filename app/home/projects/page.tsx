@@ -20,7 +20,7 @@ const DashboardPage = async () => {
         {/* Project list */}
         <div className="flex flex-col gap-4 w-full">
           {projects.map((project) => (
-            <Projectcard project={project} />
+            <Projectcard key={project.projectId} project={project} />
           ))}
           <Button>
             <Link href="/home/projects/new" className="flex items-center font-semibold">
